@@ -57,8 +57,9 @@ if uploaded_file:
         df = calculate_rsi(df, rsi_period)
         df = calculate_macd(df, fast, slow, signal)
 
-        # Ensure compatibility with LSTM-GARCH app
-        df['Log_Volume'] = np.log(df['Volume'].replace(0, np.nan)).fillna(0)
+        # ✅ Fix for LSTM-GARCH compatibility
+        df['Volume'] = pd.to_numeric(df['Volume'], errors='coerce')
+        df['Log_Volume'] = np.log(df['Volume'].clip(lower=1))
         df['MACD'] = df['MACD_Signal']
 
         # Display data
